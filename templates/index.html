@@ -1,0 +1,81 @@
+<html>
+<head>
+{% extends "layout.html" %}
+{% block content %}
+    <style>
+        body { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin: 20px }
+        td {padding: 10px}
+        .bullish { background: green; color: white}
+        .bearish {background: red; color: white }
+    </style>
+    
+</head>
+
+<body>
+    <h1>Candlestick Screener</h1>
+    <div class='container'>
+        <button type="button" name="timeframe" onclick="window.location.href='{{ url_for( 'snapshot' ) }}';">Load Data</button>
+    
+    </div>
+    <form>
+        <select name="pattern">
+            {% for pattern in patterns %} <!--Jinjatemplate loop-->
+                <option value="{{ pattern }}" {% if pattern == current_pattern %}selected="selected"{% endif %}>{{ patterns[pattern] }}</option> <!--try recreate value{"htmlroute"}="string" in TA LIB uses key:function--getting passed to template--selected=select for stay in box-->
+            {% endfor %} 
+        </select>
+
+        <input type="submit" value="scan"/>
+        
+    </form>
+
+    <table>
+        <tr>
+            <th>
+                symbol
+            </th>
+
+            <th>
+                company name
+            </th>
+
+            <th>
+                signal
+            </th>
+        </tr>
+        {% for stock in stocks %} <!--looping the stock input from bullish/bearish algo-->
+            {% if stocks[stock][current_pattern] %}    <!--if it is not none(deleted"isnot none") 44:55-->
+            <tr>
+                <td>{{ stock }} <!--key--></td>
+                <td>{{ stocks[stock]['company'] }} <!--dict inside key--'ZBH': {'company': 'Zimmer Biomet Holdings'}line21 bullshits--></td>
+                <td class="{{ stocks[stock][current_pattern] }}">{{ stocks[stock][current_pattern] }}</td> <!--needed to be turned into a class for-->
+
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <img src="https://finviz.com/chart.ashx?t={{ stock }}&ty=c&ta=1&p=d&s=l"/>
+
+                </td>
+                
+
+            </tr>
+            {% endif %}
+        {% endfor %}    
+    </table>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+    $(function() {
+        $('a#test').on('click', function(e) {
+          e.preventDefault()
+          $.getJSON('/background_process_test',
+              function(data) {
+            //do nothing
+          });
+          return false;
+        });
+      });
+    </script>
+    {% endblock content %}
+
+</body>
+
+</html>

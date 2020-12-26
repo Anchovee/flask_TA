@@ -1,0 +1,68 @@
+<html>
+<head>
+    {% extends "layout.html" %}
+    <script type=text/javascript>
+<h1>Auth bushtits</h1>
+
+{% block content %}
+    <style>
+        body { font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin: 20px }
+        td {padding: 10px}
+        .bullish { background: green; color: white}
+        .bearish {background: red; color: white }
+    </style>
+</head>
+
+<body>
+    <h1>Candlestick Screener</h1>
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
+    <button type="button" name="timeframe" onclick="window.location.href='{{ url_for( 'snapshot' ) }}';">Enter Timeframe</button>
+    </button>
+   
+    <form>
+        <select name="stock">
+            {% for stock in stocks %} <!--Jinjatemplate loop-->
+                <option value="{{ stock }}" {% if pattern == current_stock %}selected="selected"{% endif %}>{{ patterns[pattern] }}</option> <!--try recreate value{"htmlroute"}="string" in TA LIB uses key:function--getting passed to template--selected=select for stay in box-->
+            {% endfor %} 
+        </select>
+
+        <input type="submit" value="scan"/>
+        
+    </form>
+
+    <table>
+        <tr>
+            <th>
+                symbol
+            </th>
+
+            <th>
+                company name
+            </th>
+
+            <th>
+                signal
+            </th>
+        </tr>
+        {% for pattern in patterns %} <!--looping the stock input from bullish/bearish algo-->
+            {% if patterns[pattern][current_stock] %}    <!--if it is not none(deleted"isnot none") 44:55-->
+            <tr>
+                <td>{{ pattern }} <!--key--></td>
+                <td>{{ patterns[pattern] }} <!--dict inside key--'ZBH': {'company': 'Zimmer Biomet Holdings'}line21 bullshits--></td>
+                <td class="{{ patterns[pattern][current_stock] }}">{{ patterns[pattern][current_stock] }}</td> <!--needed to be turned into a class for-->
+
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <img src="https://finviz.com/chart.ashx?t={{ stock }}&ty=c&ta=1&p=d&s=l"/>
+
+                </td>
+                
+
+            </tr>
+            {% endif %}
+        {% endfor %}    
+    </table>
+    {% endblock content %}
+</body>
+</html>
